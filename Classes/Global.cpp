@@ -36,7 +36,7 @@ cocos2d::Scene * Global::getInstancePaso()
 cocos2d::Scene * Global::getInstanceBiblia()
 {
 	if (biblia == nullptr) {
-		biblia = Paso::createScene();
+		//biblia = Paso::createScene();
 		biblia->retain();
 	}
 	return biblia;

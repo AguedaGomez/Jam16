@@ -1,5 +1,8 @@
 #include "Paso.h"
 #include "Global.h"
+#include "AudioEngine.h"
+
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -27,8 +30,19 @@ bool Paso::init()
 	{
 		return false;
 	}
+	bateriaGritos.pushBack(cocos2d::String::create("sounds/gritopenoso1.mp3"));
+	bateriaGritos.pushBack(cocos2d::String::create("sounds/gritopenoso2.mp3"));
+	bateriaGritos.pushBack(cocos2d::String::create("sounds/gritopenoso3.mp3"));
 
+	//prepara();
+	return true;
+}
+
+void Paso::prepara()
+{
 	Size visibleSize = Director::getInstance()->getVisibleSize();
+	
+	idSongPaso = AudioEngine::play2d("sounds/Saeta.mp3");
 
 	señuelo = Sprite::create();
 	addChild(señuelo);
@@ -36,7 +50,7 @@ bool Paso::init()
 	letraActual = NULL;
 	pasito = Sprite::create("images/Paso/Paso.png");
 	this->addChild(pasito, 1);
-	pasito->setPosition(visibleSize.width / 2 - pasito->getBoundingBox().size.width / 2, visibleSize.height / 2 );
+	pasito->setPosition(visibleSize.width / 2 - pasito->getBoundingBox().size.width / 2, visibleSize.height / 2);
 	listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = [&](EventKeyboard::KeyCode key, Event* event) {
 		if ((int)key == letraActual + 27) {
@@ -50,6 +64,10 @@ bool Paso::init()
 		}
 		else {
 			CCLOG("MAL");
+			int r = random(0, 2);
+			auto s = bateriaGritos.at(r)->getCString();
+			AudioEngine::play2d(s, false, 0.7);
+
 			auto label = Label::create("TOO BAD", "Arial", 40);
 			label->setColor(Color3B::RED);
 			this->addChild(label);
@@ -63,12 +81,17 @@ bool Paso::init()
 		//CCLOG("b: %d",(int)cadena[0]);
 		//CCLOG("key %d", (int)key);
 	};
-	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(listener,this);
+	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	this->runAction(RepeatForever::create(Sequence::create( CallFuncN::create(CC_CALLBACK_1(Paso::spawnPersonas,this)),DelayTime::create(0.5f) ,NULL)));
-	señuelo->runAction(RepeatForever::create(Sequence::create(CallFuncN::create(CC_CALLBACK_0(Paso::spawnLetras, this,n_letra)),DelayTime::create(0.9f),NULL)));
-	
-	return true;
+	this->runAction(RepeatForever::create(Sequence::create(CallFuncN::create(CC_CALLBACK_1(Paso::spawnPersonas, this)), DelayTime::create(0.5f), NULL)));
+	señuelo->runAction(RepeatForever::create(Sequence::create(CallFuncN::create(CC_CALLBACK_0(Paso::spawnLetras, this, n_letra)), DelayTime::create(0.9f), NULL)));
+
+}
+
+void Paso::onEnterTransitionDidFinish()
+{
+	prepara();
+
 }
 
 void Paso::spawnLetras(int &indice)
@@ -89,6 +112,9 @@ void Paso::spawnLetras(int &indice)
 					c.at(j)->stopAllActions();
 				stopAllActions();
 				pasito->runAction(Sequence::create(MoveTo::create(0.3, Vec2(Director::getInstance()->getVisibleSize().width + pasito->getBoundingBox().size.width, pasito->getPositionY())),CallFuncN::create(CC_CALLBACK_1(Paso::goToBiblia,this)), NULL));
+				AudioEngine::stopAll();
+				AudioEngine::play2d("sounds/Aplausos_mixdown.mp3",false,0.5);
+				listener->setEnabled(false);
 
 			}
 			else {
@@ -97,9 +123,6 @@ void Paso::spawnLetras(int &indice)
 
 			}
 		}
-		
-		
-		
 		
 }
 
@@ -130,5 +153,7 @@ void Paso::eliminaPersona(Node *p)
 
 void Paso::goToBiblia(Node* sender)
 {
-	Director::getInstance()->replaceScene(Global::getInstance()->getInstanceBiblia());
+	removeAllChildren();
+	Director::getInstance()->popScene();
+	//Director::getInstance()->replaceScene(Global::getInstance()->getInstanceBiblia());
 }

@@ -1,5 +1,8 @@
 #include "MainMenuScene.h"
 #include "Global.h"
+#include "AudioEngine.h"
+
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -38,11 +41,13 @@ bool MainMenu::init()
 	menu->setPosition(Point(visibleSize.width/2,visibleSize.height/2));
 	addChild(menu, 0);
 
+	idSongMainMenu=AudioEngine::play2d("sounds/Guadalquivir.mp3",true,0.7);
     return true;
 }
 
 void MainMenu::goToBiblia(Ref *pSender)
 {
+	AudioEngine::stopAll();
 	Director::getInstance()->pushScene(Global::getInstance()->getInstancePaso()); 
 }
 

@@ -10,17 +10,24 @@ public:
 	int letraActual;
 	cocos2d::Sprite* pasito;
 	virtual bool init();
+	cocos2d::Vector<cocos2d::String*>  bateriaGritos;
 
+	void prepara();
 
 private:
 	int fallos = 0;
+	int idSongPaso;
+
+
+	virtual void onEnterTransitionDidFinish();
+
 
 	cocos2d::Sprite* señuelo;
 	void spawnLetras(int &indice);
 	void spawnPersonas(Node* n);
 	void eliminaPersona(Node* p);
 
-	bool compruebaTeclaAcertada();
+	
 	void goToBiblia(Node* sender);
 
 	cocos2d::EventListenerKeyboard* listener;

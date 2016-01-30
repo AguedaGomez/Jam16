@@ -11,7 +11,7 @@ public:
     virtual bool init();
 	void goToBiblia(Ref *pSender);
 
-    
+	int idSongMainMenu;
     // implement the "static create()" method manually
     CREATE_FUNC(MainMenu);
 };
