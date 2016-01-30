@@ -58,9 +58,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
    
     // create a scene. it's an autorelease object
 
-    auto scene = Iglesia::createScene();
+    //auto scene = Iglesia::createScene();
 
-   //auto scene = MainMenu::createScene();
+     auto scene = MainMenu::createScene();
 
 
     // run
