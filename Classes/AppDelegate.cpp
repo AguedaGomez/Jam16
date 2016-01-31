@@ -1,12 +1,9 @@
 #include "AppDelegate.h"
-#include "Iglesia.h"
 #include "MainMenuScene.h"
-
 
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1280, 720);
-
 
 AppDelegate::AppDelegate() {
 
@@ -57,11 +54,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
    
     // create a scene. it's an autorelease object
-
-    //auto scene = Iglesia::createScene();
-
-     auto scene = MainMenu::createScene();
-
+    auto scene = MainMenu::createScene();
 
     // run
     director->runWithScene(scene);

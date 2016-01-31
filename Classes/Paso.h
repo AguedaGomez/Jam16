@@ -10,15 +10,21 @@ public:
 	int letraActual;
 	cocos2d::Sprite* pasito;
 	virtual bool init();
+	cocos2d::Label* letraActual_label;
 	cocos2d::Vector<cocos2d::String*>  bateriaGritos;
+	std::vector<std::string> personasEspaldas;
+	std::vector<std::string> personasCara;
+
 
 	void prepara();
+	void creaLabelfinal(Node* n);
+
 
 private:
 	int fallos = 0;
 	int idSongPaso;
 
-
+	void meneito(Node* n);
 	virtual void onEnterTransitionDidFinish();
 
 

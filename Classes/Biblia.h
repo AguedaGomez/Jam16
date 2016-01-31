@@ -9,12 +9,16 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-    
-	void goToIglesiaScene(Ref *pSender);
+	void goToIglesia(Ref *pSender);
+
+	int idSongBiblia;
+
+	void cargaBotones();
+	float stringtofloat(std::string cadena);
+	virtual void onEnterTransitionDidFinish();
 
     // implement the "static create()" method manually
     CREATE_FUNC(Biblia);
-
 };
 
-#endif // __BIBLIA_SCENE_H__
+#endif // __MAINMENU_SCENE_H__

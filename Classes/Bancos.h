@@ -16,7 +16,7 @@ public:
 	int asignaPosicion();
 private:
 	int maxpersonas = 5;
-	int numpersonas;
+	int numpersonas=0;
 	std::vector<int> vectorPosiciones;
 
 };

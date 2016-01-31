@@ -1,6 +1,7 @@
 #include "Iglesia.h"
 #include "Biblia.h"
 #include "Bancos.h"
+#include "Global.h"
 
 USING_NS_CC;
 
@@ -33,9 +34,9 @@ bool Iglesia::init()
 	// add "HelloWorld" splash screen"
 
 
-	std::vector<Bancos>vectorBancos;
+	/*std::vector<Bancos>vectorBancos;
 
-	/*auto listener = EventListenerTouchOneByOne::create();
+	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](cocos2d::Touch* touch, cocos2d::Event* event)
 	{
 			return true; // to indicate that we have consumed it.
@@ -46,54 +47,122 @@ bool Iglesia::init()
 		this->goToPasoScene(this);
 	};
 
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 30);*/
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 30);
 
-	// add the sprite as a child to this layer
-	//auto sprite = Sprite::create("HelloWorld.png");
-	//this->addChild(sprite, 0);
 
-	//auto bancoi = Sprite::create("Bancos/banco.png");
-	//this->addChild(bancoi);
-	//bancoi->getParent()->setTag(4000);
-	//CCLOG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA %d", bancoi->getParent()->getTag());
-	colocaBancos();
-	//colocaPersona(0);
+
+	auto istener = EventListenerKeyboard::create();
+	istener->onKeyPressed = [](EventKeyboard::KeyCode keyCode, Event* event) {
+
+		Vec2 loc = event->getCurrentTarget()->getPosition();
+		switch (keyCode) {
+
+		case EventKeyboard::KeyCode::KEY_F:
+			Global::getInstance()->feligresesAñadidos += 5;
+			break;
+		case EventKeyboard::KeyCode::KEY_D:
+			Global::getInstance()->feligresesAñadidos -= 5;
+			break;
+		}
+	};
+
+	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(istener, this);*/
+	
+	
+
+	auto dinero = Global::getInstance()->GetDinero();
+
+
+	fondo = Sprite::create("images/Paso/fondo.png");
+	fondo->retain();
+	this->addChild(fondo);
+	fondo->setPosition(640,360);
+	Sacerdote = Sprite::create("images/Persona/cura.png");
+	Sacerdote->retain();
+	Sacerdote->setPosition(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height / 2+30);
+	colocaSacerdote();
+	colocaRiquezas();
+	transicionAMinijuego();
+	amen=Label::create("Ameeeeeen, JO-DER","Arial",30);
+	amen->setPosition(200, 700);
+	this -> addChild(amen);
+	listenerToque = EventListenerTouchOneByOne::create();
+	listenerToque->onTouchBegan = [&](cocos2d::Touch* touch, cocos2d::Event* event)
+	{
+		if (amen->getBoundingBox().containsPoint(touch->getLocation())) {
+			return true; // to indicate that we have consumed it.
+		}
+		return false;
+	};
+
+	listenerToque->onTouchEnded = [=](cocos2d::Touch* touch, cocos2d::Event* event)
+	{
+		amen->runAction(Sequence::create(ScaleTo::create(0.2f, 0.8f), ScaleTo::create(0.2, 1.0f), NULL));
+		listenerToque->setEnabled(false);
+		Iglesia::goToPasoScene(this);
+	};
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listenerToque, 30);
+
 	return true;
 }
 
 void Iglesia::goToPasoScene(Ref *pSender) {
-	auto scene = Iglesia::createScene();
-
-	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene, Color3B::WHITE));
+	feligreses_labl->removeFromParent();
+	Director::getInstance()->replaceScene(TransitionFade::create(1.0f, Global::getInstance()->getInstancePaso(), Color3B::WHITE));
 }
 
 void Iglesia::onEnterTransitionDidFinish()
 {
-	CCLOG(" Entro en bibilia despues de transicion");
+
+	colocaBancos();
+	colocaPersona(0);
+	Global::getInstance()->multiplicaFeligreses(Global::getInstance()->multiplicadorFeligreses);
+	Global::getInstance()->SetFeligreses(Global::getInstance()->feligresesAñadidos);
+	Global::getInstance()->SetDinero(Global::getInstance()->dineroAñadidos);
+	Global::getInstance()->feligresesAñadidos = 0;
+	Global::getInstance()->dineroAñadidos = 0;
+
+	auto feligreses = Global::getInstance()->GetFeligreses();
+	auto dinero = Global::getInstance()->GetDinero();
+	if (feligreses <= 0 || dinero == 0) {
+		//gotoGameOver();
+	}
+	else if (feligreses <= 50) {
+		Global::getInstance()->setNivel(1);
+	}
+	else if (feligreses > 50 && feligreses <= 70) {
+		Global::getInstance()->setNivel(2);
+	}
+	else 	Global::getInstance()->setNivel(3);
+	listenerToque->setEnabled(true);
+
+	feligreses_labl = Label::create(String::createWithFormat("Feligreses %d", Global::getInstance()->GetFeligreses())->getCString(),"Arial",30);
+	this->addChild(feligreses_labl);
+	feligreses_labl->setPosition(200, 500);
 }
 
 void Iglesia::colocaBancos()
 {
 	float maxHeight = Director::getInstance()->getVisibleSize().height / 2;
-	float widthLimit = Director::getInstance()->getVisibleSize().width / 2;
+	float widthLimit = Director::getInstance()->getVisibleSize().width*0.49;
 	int mitadPasilloAncho = 40;
 	float escala;
 	float distfijaeny = 0.0;
 
 	maxBancos=0;
-	auto PLACEHOLDERnivel = 3;
-	switch (PLACEHOLDERnivel) {
+	auto nivel = Global::getInstance()->getNivel();
+	switch (nivel) {
 	case 1:
-		maxBancos = 4;
+		maxBancos = 10;
 		break;
 	case 2:
-		maxBancos = 6;
+		maxBancos = 14;
 		break;
 	case 3:
-		maxBancos = 20;
+		maxBancos = 16;
 		break;
 	}
-	String* filename = String::create("Bancos/banco.png");
+	String* filename = String::create("images/Bancos/banco_senuelo.png");
 	for (int i = 0; i < maxBancos; i+=2) {
 
 		Bancos* bancoi = Bancos::Create(filename);
@@ -105,10 +174,10 @@ void Iglesia::colocaBancos()
 		vectorBancos.push_back((Bancos*)bancoi);
 		vectorBancos.push_back((Bancos*)bancod);
 		float resta = (maxBancos - i);
-		CCLOG("MAXBANCOS : %d, iterador %d, resta %d",maxBancos,i, (maxBancos - i));
+
 		if (i == 0) {
-			escala = 0.04;
-			distfijaeny += bancoi->getBoundingBox().size.height*0.1 / 2;
+			escala = 1.0/resta;
+			distfijaeny += bancoi->getBoundingBox().size.height*escala / 2;
 		}
 		else {
 			escala = 1.0 / resta;
@@ -117,7 +186,6 @@ void Iglesia::colocaBancos()
 		}
 		desplazamiento = bancoi->getBoundingBox().size.width*escala / 2;
 
-		CCLOG("Escala %f",escala);
 
 		bancoi->setScale(escala);
 		bancod->setScale(escala);
@@ -131,28 +199,40 @@ void Iglesia::colocaBancos()
 		bancoi->setPosition(widthLimit -desplazamiento - mitadPasilloAncho, maxHeight -distfijaeny);
 		bancod->setPosition(widthLimit+desplazamiento + mitadPasilloAncho, maxHeight - distfijaeny);
 
-
-
-		CCLOG("Banco i esta en  %f %f banco d esta en %f %f", bancoi->getPositionX(), bancoi->getPositionY(), bancod->getPositionX(), bancod->getPositionY());
 		
-		addChild(bancoi,1);
-		addChild(bancod,1);
+		addChild(bancoi,i/2);
+		addChild(bancod,i/2);
 
-		//CCLOG("El padre de bancoi es %d, el padre de bancod es %d", bancoi->getParent()->getTag(), bancod->getParent()->getTag());
 	}
 }
 
 void Iglesia::colocaPersona(int personasColocadas)
 {
-	auto feligreses = 5;
-	if (personasColocadas == feligreses) return;
-	auto bancorandom = random(0, maxBancos-1);
-	CCLOG("BancoRandom = %d", bancorandom);
-	bool personacolocada = vectorBancos[bancorandom]->colocaPersona(Sprite::create(cocos2d::String::create("Bancos/silueta.png")->getCString()));
-	if (!personacolocada) {
-		colocaPersona(personasColocadas);
+	auto feligreses = Global::getInstance()->GetFeligreses();
+	CCLOG("feligreses = %d", feligreses);
+	for (int i = 0; i < feligreses; i++) {
+		auto bancorandom = random(0, maxBancos - 1);
+		bool personacolocada = vectorBancos[bancorandom]->colocaPersona(Sprite::create(cocos2d::String::createWithFormat("images/Bancos/silueta%i.png",random(1,5))->getCString()));
+		while (!personacolocada) {
+			bancorandom = random(0, maxBancos - 1);
+			personacolocada = vectorBancos[bancorandom]->colocaPersona(Sprite::create(cocos2d::String::createWithFormat("images/Bancos/silueta%i.png", random(1, 5))->getCString()));
+		}
 	}
-	else
-		colocaPersona(personasColocadas + 1);
+}
+
+void Iglesia::colocaSacerdote()
+{
+	Sacerdote->removeFromParent();
+	this->addChild(Sacerdote, 2);
+	Sacerdote->setScale(0.2/Global::getInstance()->getNivel());
+}
+
+void Iglesia::colocaRiquezas()
+{
+}
+
+void Iglesia::transicionAMinijuego()
+{
+
 }
 

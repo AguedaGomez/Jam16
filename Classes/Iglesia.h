@@ -17,9 +17,16 @@ public:
 
 	void colocaBancos();
 	void colocaPersona(int personasColocadas);
+	void colocaSacerdote();
+	void colocaRiquezas();
+	void transicionAMinijuego();
 
+	cocos2d::Sprite* fondo;
 	std::vector<Bancos*>vectorBancos;
-
+	cocos2d::Sprite* Sacerdote;
+	cocos2d::Label* feligreses_labl;
+	cocos2d::Label* amen;
+	cocos2d::EventListenerTouchOneByOne* listenerToque;
 	// implement the "static create()" method manually
 	CREATE_FUNC(Iglesia);
 

@@ -31,14 +31,19 @@ bool MainMenu::init()
         return false;
     }
     
+
     Size visibleSize = Director::getInstance()->getVisibleSize();
     
-	auto botonPlay = MenuItemImage::create("images/MainMenuScene/start_btn.png", "images/MainMenuScene/start_btn.png",
+	auto botonPlay = MenuItemImage::create("images/MainMenuScene/start_btn.png", "images/MainMenuScene/start_btn2.png",
 		CC_CALLBACK_1(MainMenu::goToBiblia, this));
+	botonPlay->setScale(0.6);
 
+	auto background = cocos2d::Sprite::create("images/MainMenuScene/MENU.png");
+	background->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+	addChild(background);
 
 	auto menu = Menu::create(botonPlay, NULL);
-	menu->setPosition(Point(visibleSize.width/2,visibleSize.height/2));
+	menu->setPosition(Point(visibleSize.width/2,visibleSize.height/5));
 	addChild(menu, 0);
 
 	idSongMainMenu=AudioEngine::play2d("sounds/Guadalquivir.mp3",true,0.7);
@@ -48,6 +53,6 @@ bool MainMenu::init()
 void MainMenu::goToBiblia(Ref *pSender)
 {
 	AudioEngine::stopAll();
-	Director::getInstance()->pushScene(Global::getInstance()->getInstancePaso()); 
+	Director::getInstance()->pushScene(Global::getInstance()->getInstanceBiblia()); 
 }
 
