@@ -4,6 +4,9 @@
 #include "cocos2d.h"
 #include "Bancos.h"
 
+using namespace cocos2d::experimental;
+
+
 class Iglesia : public cocos2d::Layer
 {
 public:
@@ -20,6 +23,9 @@ public:
 	void colocaSacerdote();
 	void colocaRiquezas();
 	void transicionAMinijuego();
+	void reproduceReaccion(Node *pSender,char elec);
+	void reproduceRecolecta(Node *pSender, char elec);
+	
 
 	cocos2d::Sprite* fondo;
 	std::vector<Bancos*>vectorBancos;
@@ -29,7 +35,10 @@ public:
 	cocos2d::EventListenerTouchOneByOne* listenerToque;
 	// implement the "static create()" method manually
 	CREATE_FUNC(Iglesia);
-
+private:
+	int idSongIglesiaAmbiente;
+	char eleccion;
+	
 };
 
 #endif // __BIBLIA_SCENE_H__

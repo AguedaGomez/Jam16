@@ -2,8 +2,12 @@
 #include "Biblia.h"
 #include "Bancos.h"
 #include "Global.h"
+#include "AudioEngine.h"
+
 
 USING_NS_CC;
+using namespace cocos2d::experimental;
+
 
 Scene* Iglesia::createScene()
 {
@@ -122,6 +126,8 @@ void Iglesia::onEnterTransitionDidFinish()
 	Global::getInstance()->feligresesAñadidos = 0;
 	Global::getInstance()->dineroAñadidos = 0;
 
+	eleccion = Global::getInstance()->eleccion;
+	log("eleccion = %c",eleccion);
 	auto feligreses = Global::getInstance()->GetFeligreses();
 	auto dinero = Global::getInstance()->GetDinero();
 	if (feligreses <= 0 || dinero == 0) {
@@ -139,7 +145,76 @@ void Iglesia::onEnterTransitionDidFinish()
 	feligreses_labl = Label::create(String::createWithFormat("Feligreses %d", Global::getInstance()->GetFeligreses())->getCString(),"Arial",30);
 	this->addChild(feligreses_labl);
 	feligreses_labl->setPosition(200, 500);
+
+	idSongIglesiaAmbiente = AudioEngine::play2d("sounds/Background.mp3");
+	AudioEngine::setVolume(idSongIglesiaAmbiente, 0.01);
+
+	
+	auto reaccionSonido = Sprite::create();
+	this->addChild(reaccionSonido);
+	reaccionSonido->runAction(Sequence::create(DelayTime::create(2.0f), CallFuncN::create(CC_CALLBACK_1(Iglesia::reproduceReaccion,this,eleccion)), NULL));
+	reaccionSonido->runAction(Sequence::create(DelayTime::create(4.0f), CallFuncN::create(CC_CALLBACK_1(Iglesia::reproduceRecolecta, this,eleccion)), NULL));
 }
+
+void Iglesia::reproduceReaccion(Node *pSender, char elec)
+{
+	int Sonidoreaccion;
+	switch (elec)
+	{
+	case 'o':
+		if (random(0, 1) < 0.5) {
+			Sonidoreaccion = AudioEngine::play2d("sounds/Ovacion1.mp3");
+		}
+		else
+		{
+			Sonidoreaccion = AudioEngine::play2d("sounds/Ovacion2.mp3");
+		}
+		AudioEngine::setVolume(Sonidoreaccion, 0.05);
+		
+
+		break;
+	case 'p':
+			Sonidoreaccion = AudioEngine::play2d("sounds/Toses.mp3");
+		AudioEngine::setVolume(Sonidoreaccion, 0.05);
+		break;
+	case 'a':
+		if (random(0, 1) < 0.5) {
+			Sonidoreaccion = AudioEngine::play2d("sounds/Silencio1.mp3");
+		}
+		else {
+			Sonidoreaccion = AudioEngine::play2d("sounds/Silencio2.mp3");
+		}
+		AudioEngine::setVolume(Sonidoreaccion, 0.05);
+
+		break;
+
+	default:
+		break;
+	}
+
+}
+
+void Iglesia::reproduceRecolecta(Node * pSender, char elec)
+{
+	int sonidoMonedas;
+	switch (elec)
+	{
+	case 'o':
+		sonidoMonedas = AudioEngine::play2d("sounds/monedas.mp3");
+		break;
+	case 'p':
+		sonidoMonedas = AudioEngine::play2d("sounds/monedasIntermedio.mp3");
+		break;
+	case 'a':
+		sonidoMonedas = AudioEngine::play2d("sounds/monedasLargo.mp3");
+		break;
+
+	default:
+		break;
+	}
+}
+
+
 
 void Iglesia::colocaBancos()
 {

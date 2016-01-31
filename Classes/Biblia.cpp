@@ -4,6 +4,7 @@
 #include "ui/CocosGUI.h"
 
 
+
 using namespace cocos2d::experimental;
 
 USING_NS_CC;
@@ -38,6 +39,8 @@ bool Biblia::init()
 	sprite->setPosition(1280/2,720/2);
 	addChild(sprite, 0);
 
+	idSongBiblia = AudioEngine::play2d("sounds/biblia.mp3");
+
     return true;
 }
 
@@ -45,9 +48,6 @@ void Biblia::goToIglesia(Ref * pSender)
 {
 	Director::getInstance()->replaceScene(TransitionFade::create(1.0f,Global::getInstance()->getInstanceIglesia(),Color3B::WHITE));
 }
-
-
-
 
 void Biblia::cargaBotones()
 {
@@ -76,6 +76,8 @@ void Biblia::cargaBotones()
 
 			Global::getInstance()->multiplicadorDinero = stringtofloat(stringDinero);
 			Global::getInstance()->FrasePaso = stringFrase;
+			idSongBiblia = AudioEngine::play2d("sounds/biblia.mp3");
+			Global::getInstance()->eleccion = 'a';
 
 			CCLOG("multiplicador d %f multiplicador f %f", Global::getInstance()->multiplicadorDinero, Global::getInstance()->multiplicadorFeligreses);
 			goToIglesia(this);
@@ -106,7 +108,8 @@ void Biblia::cargaBotones()
 
 			Global::getInstance()->multiplicadorDinero = stringtofloat(stringDinero);
 			Global::getInstance()->FrasePaso = stringFrase;
-
+			idSongBiblia = AudioEngine::play2d("sounds/biblia.mp3");
+			Global::getInstance()->eleccion = 'o';
 			CCLOG("multiplicador d %f multiplicador f %f", Global::getInstance()->multiplicadorDinero, Global::getInstance()->multiplicadorFeligreses);
 			goToIglesia(this);
 			break;
@@ -137,7 +140,8 @@ void Biblia::cargaBotones()
 			Global::getInstance()->multiplicadorFeligreses = stringtofloat(stringfeli);
 			Global::getInstance()->multiplicadorDinero = stringtofloat(stringDinero);
 			Global::getInstance()->FrasePaso = stringFrase;
-
+			idSongBiblia = AudioEngine::play2d("sounds/biblia.mp3");
+			Global::getInstance()->eleccion = 'p';
 			CCLOG("multiplicador d %f multiplicador f %f", Global::getInstance()->multiplicadorDinero, Global::getInstance()->multiplicadorFeligreses);
 			goToIglesia(this);
 			break;

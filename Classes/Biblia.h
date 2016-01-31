@@ -2,6 +2,8 @@
 #define __BIBLIA_SCENE_H__
 
 #include "cocos2d.h"
+using namespace cocos2d::experimental;
+
 
 class Biblia : public cocos2d::Layer
 {
@@ -19,6 +21,7 @@ public:
 
     // implement the "static create()" method manually
     CREATE_FUNC(Biblia);
+
 };
 
 #endif // __MAINMENU_SCENE_H__

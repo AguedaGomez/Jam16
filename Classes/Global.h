@@ -15,6 +15,8 @@ public:
 	int feligresesAñadidos;
 	int dineroAñadidos;
 
+	char eleccion;
+
 	cocos2d::Scene* paso;
 	cocos2d::Scene* biblia;
 	cocos2d::Scene* iglesia;

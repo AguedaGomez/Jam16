@@ -108,7 +108,6 @@ void Paso::meneito(Node*n)
 }
 
 
-
 void Paso::onEnterTransitionDidFinish()
 {
 	prepara();
